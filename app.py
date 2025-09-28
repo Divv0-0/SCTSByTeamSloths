@@ -47,7 +47,8 @@ if not st.session_state.logged_in:
     if st.button("Login"):
         # For demo: any username/pwd works
         st.session_state.logged_in = True
-        st.success("Login successful! Proceed to scheduler.")
+        st.success("Login successful! Proceeding...")
+        st.experimental_rerun()  # avoids double click problem
     st.stop()
 
 # ---------------------------
@@ -88,29 +89,34 @@ def generate_timetable(option_seed=0):
         data.append(row)
     return pd.DataFrame(data, index=days)
 
+# ---------------------------
+# Generate Timetables on demand
+# ---------------------------
 st.subheader("Generated Timetables")
 
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown("**Option 1**")
-    df1 = generate_timetable(option_seed=1)
-    st.dataframe(df1)
-    st.download_button("Download CSV (Option 1)", df1.to_csv().encode("utf-8"), "timetable1.csv")
-    img_buf1 = df_to_image(df1, "Timetable Option 1")
-    st.download_button("Download PNG (Option 1)", img_buf1, "timetable1.png", mime="image/png")
+if st.button("Generate Timetables"):
+    col1, col2 = st.columns(2)
 
-with col2:
-    st.markdown("**Option 2**")
-    df2 = generate_timetable(option_seed=2)
-    st.dataframe(df2)
-    st.download_button("Download CSV (Option 2)", df2.to_csv().encode("utf-8"), "timetable2.csv")
-    img_buf2 = df_to_image(df2, "Timetable Option 2")
-    st.download_button("Download PNG (Option 2)", img_buf2, "timetable2.png", mime="image/png")
+    with col1:
+        st.markdown("**Option 1**")
+        df1 = generate_timetable(option_seed=1)
+        st.dataframe(df1)
+        st.download_button("Download CSV (Option 1)", df1.to_csv().encode("utf-8"), "timetable1.csv")
+        img_buf1 = df_to_image(df1, "Timetable Option 1")
+        st.download_button("Download PNG (Option 1)", img_buf1, "timetable1.png", mime="image/png")
 
-st.subheader("Review & Approval")
-choice = st.radio("Action", ["Approve Timetable", "Request Rearrangement"])
-if choice == "Approve Timetable":
-    st.success("Timetable approved and saved for deployment.")
-else:
-    st.warning("Rearrangement requested — new options will be generated in the final version.")
+    with col2:
+        st.markdown("**Option 2**")
+        df2 = generate_timetable(option_seed=2)
+        st.dataframe(df2)
+        st.download_button("Download CSV (Option 2)", df2.to_csv().encode("utf-8"), "timetable2.csv")
+        img_buf2 = df_to_image(df2, "Timetable Option 2")
+        st.download_button("Download PNG (Option 2)", img_buf2, "timetable2.png", mime="image/png")
+
+    st.subheader("Review & Approval")
+    choice = st.radio("Action", ["Approve Timetable", "Request Rearrangement"])
+    if choice == "Approve Timetable":
+        st.success("Timetable approved and saved for deployment.")
+    else:
+        st.warning("Rearrangement requested — new options will be generated in the final version.")
 
