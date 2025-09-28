@@ -44,12 +44,13 @@ if not st.session_state.logged_in:
     st.subheader("Authorized Personnel Login")
     user = st.text_input("Username")
     pwd = st.text_input("Password", type="password")
-    if st.button("Login"):
-        # For demo: any username/pwd works
+    login_clicked = st.button("Login")
+    if login_clicked:
         st.session_state.logged_in = True
-        st.success("Login successful! Proceeding...")
-        st.experimental_rerun()  # avoids double click problem
-    st.stop()
+        st.success("Login successful! Proceed to scheduler.")
+    if not st.session_state.logged_in:
+        st.stop()  # only stop if login hasn't succeeded yet
+
 
 # ---------------------------
 # Main App after Login
@@ -119,4 +120,5 @@ if st.button("Generate Timetables"):
         st.success("Timetable approved and saved for deployment.")
     else:
         st.warning("Rearrangement requested — new options will be generated in the final version.")
+
 
