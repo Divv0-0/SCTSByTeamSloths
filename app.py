@@ -16,8 +16,8 @@ faculty = st.sidebar.text_area("Faculty (comma separated)", "Dr. A, Dr. B, Dr. C
 subject_list = [s.strip() for s in subjects.split(",") if s.strip()]
 faculty_list = [f.strip() for f in faculty.split(",") if f.strip()]
 
-days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-slots = ["9-10", "10-11", "11-12", "2-3", "3-4"]
+days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+slots = ["9-10", "10-11", "11-12", "2-3", "3-4","4-5"]
 
 def generate_timetable():
     random.seed(42)  # fixed for repeatability
@@ -63,3 +63,4 @@ if st.button("Generate Timetable"):
     # PNG download
     img_buf = df_to_image(df, "Generated Timetable")
     st.download_button("Download PNG", img_buf, "timetable.png", mime="image/png")
+
