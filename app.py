@@ -3,13 +3,12 @@ import random
 import pandas as pd
 import streamlit as st
 from io import BytesIO
-
-# ---- fix matplotlib import issues ----
-os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
-
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+# ---- fix matplotlib import issues ----
+os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
 
 # ---------------------------
 # Convert DataFrame to PNG
@@ -51,13 +50,12 @@ if not st.session_state.logged_in:
         st.session_state.logged_in = True
         st.success("Login successful! Proceeding to scheduler...")
 
-    st.stop()  # Stop execution here until logged in
+    st.stop()  # Stop execution until logged in
 
 # ---------------------------
-# Main App (only runs if logged_in == True)
+# Main App (only runs if logged_in)
 # ---------------------------
 st.title("Smart Classroom & Timetable Scheduler")
-
 st.sidebar.header("Input Parameters")
 
 # Input form
@@ -77,10 +75,8 @@ days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 slots = ["9-10", "10-11", "11-12", "2-3", "3-4"]
 
 # Timetable generation function
-def generate_timetable(option_seed=0):
-    import random
-    import pandas as pd
-    random.seed(option_seed)
+def generate_timetable(seed=0):
+    random.seed(seed)
     data = []
     faculty_load = {f: 0 for f in faculty_list}
     for d in days:
@@ -94,19 +90,15 @@ def generate_timetable(option_seed=0):
     return pd.DataFrame(data, index=days)
 
 # ---------------------------
-# Generate Timetables
+# Generate Timetable
 # ---------------------------
-st.subheader("Generated Timetables")
+st.subheader("Generated Timetable")
 
-if st.button("Generate Timetables"):
-    col1, col2 = st.columns(2)
+if st.button("Generate Timetable"):
+    df = generate_timetable(seed=1)
+    st.dataframe(df)
 
-    with col1:
-        st.markdown("**Option 1**")
-        df1 = generate_timetable(option_seed=1)
-        st.dataframe(df1)
-
-    with col2:
-        st.markdown("**Option 2**")
-        df2 = generate_timetable(option_seed=2)
-        st.dataframe(df2)
+    # Downloads
+    st.download_button("Download CSV", df.to_csv().encode("utf-8"), "timetable.csv")
+    img_buf = df_to_image(df, "Timetable")
+    st.download_button("Download PNG", img_buf, "timetable.png", mime="image/png")
