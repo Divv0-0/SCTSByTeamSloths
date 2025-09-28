@@ -42,14 +42,20 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     st.title("Smart Classroom & Timetable Scheduler")
     st.subheader("Authorized Personnel Login")
+
     user = st.text_input("Username")
     pwd = st.text_input("Password", type="password")
     login_clicked = st.button("Login")
+
     if login_clicked:
+        # For demo: any username/pwd works
         st.session_state.logged_in = True
-        st.success("Login successful! Proceed to scheduler.")
+        st.success("Login successful! Proceeding to scheduler...")
+
+    # Stop here until login is successful
     if not st.session_state.logged_in:
-        st.stop()  # only stop if login hasn't succeeded yet
+        st.stop()
+
 
 
 # ---------------------------
@@ -120,5 +126,6 @@ if st.button("Generate Timetables"):
         st.success("Timetable approved and saved for deployment.")
     else:
         st.warning("Rearrangement requested — new options will be generated in the final version.")
+
 
 
